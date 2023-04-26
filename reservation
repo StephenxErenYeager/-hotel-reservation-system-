@@ -1,0 +1,324 @@
+package reservationsystem;
+ import java.util.*;
+import java.io.IOException;
+
+
+public class HotelReservationSystem {
+    // Declare and initialize variables
+    static int numNights;
+    static int numGuests;
+    static int roomNumber;
+    static String roomType;
+    static String name;
+    static double totalPrice;
+    static double overTotal;
+    static String receipt = "";
+
+    static boolean[] classicRoom = new boolean[10];
+    static boolean[] deluxeRoom = new boolean[10];
+    static boolean[] suiteRoom = new boolean[10];
+    
+    
+    private static boolean MainMenu = true;
+    private static boolean SubMenu = true;
+     static void space(){
+        for (int i = 0; i <= 15; i++){
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Scanner input = new Scanner(System.in);
+        int option = 0;
+
+        // Set all rooms as available
+        for (int i = 0; i < 10; i++) {
+            classicRoom[i] = true;
+            deluxeRoom[i] = true;
+            suiteRoom[i] = true;
+        }
+                
+        String username;
+        String password;
+        boolean isLoggedIn = false;
+        space();
+        System.out.println("Hello and Welcome to Greeds Hotel Reservation System");
+        do {
+            System.out.println("\nLOGIN");
+            System.out.print("\nEnter username: ");
+            username = input.nextLine();
+            
+            
+            System.out.print("Enter password: ");
+            password = input.nextLine();
+            
+            if (username.equals("admin") && password.equals("123")) {
+                isLoggedIn = true;
+            } else {
+                space();
+                System.out.println("Invalid username or password. Please try again.");
+            }
+        } while (!isLoggedIn);        
+        space();
+        System.out.println("Login successful!");
+
+        
+        while (MainMenu) {
+            while (SubMenu){
+                space();
+                System.out.println("\nWelcome to the Rosewood Hotel Reservation System!");
+                System.out.println("\nHow can I help you?");
+                System.out.println("\n---------------------------------------------------------------------------------------");
+                System.out.println("1. Reserve a Room");
+                System.out.println("2. Check Room Availability");
+                System.out.println("3. Cancel Reservation");
+                System.out.println("4. Exit");
+                System.out.println("---------------------------------------------------------------------------------------");
+                System.out.print("\nPlease select an option:(Number only)");
+            
+                String Selection = input.next();
+
+                switch (Selection){
+                    case "1":
+                        makeReservation();
+                        break;
+                    case "2":
+                        checkAvailability();
+                        break;
+                    case "3":
+                        cancelReservation();
+                        break;
+                    case "4":
+                        System.out.println("Thank you for using the Rosewood Hotel Reservation System!");
+                        System.exit(0);
+                    default:
+                        System.out.println("Invalid option, please try again.");
+                        space();
+                        break;
+                    
+            }
+                
+                System.out.println("---------------------------------------------------------------------------------------");
+                System.out.println("Would you like to Select another Option?(Number Only)\n1) Yes\n2) No");
+                System.out.println("---------------------------------------------------------------------------------------");
+                System.out.print("Enter your choice(Number Only): ");
+                
+                if (input.nextInt() == 1) {
+                    SubMenu = true;
+                } 
+                else {
+                    SubMenu = false;
+                }
+            }
+            SubMenu = true;
+            
+            System.out.println("---------------------------------------------------------------------------------------");
+            System.out.println("Would You Like To Continue With The Program?(Number Only)\n1:) Yes\n2:) No");
+            System.out.println("---------------------------------------------------------------------------------------");
+            System.out.print("Enter your choice: ");
+            if (input.nextInt() == 1) {
+                MainMenu = true;
+            } else {
+                System.out.println("Thank you for using Rosewood Hotel Reservation System.");
+                System.exit(0);
+
+            }
+        }
+    }
+       
+
+    public static void makeReservation() {
+        Scanner input = new Scanner(System.in);
+        space();
+        System.out.println("\nRosewood Hotel Reservation");
+        System.out.println("\nHow many people will reserve a hotel (1-10 people)?");
+        System.out.print("Please Select an Option: ");
+        numGuests = input.nextInt();
+
+        // Determine which rooms to show based on the number of guests
+        
+        if (numGuests >= 1 && numGuests <= 2) {   
+            space();
+            System.out.println("\nRosewood Hotel Reservation");
+            System.out.println("Chambre d'hotel Good for 1-2 people.");
+            System.out.println("\nChambre d'hotel Type          Chambre d'hotel #         Price");        
+            System.out.println("Classic Chambre d'hotel           101-103             (PHP 2000)");
+            System.out.println("Deluxe Chambre d'hotel            201-203             (PHP 4000)");
+            System.out.println("Suite Chambre d'hotel             301-303             (PHP 6000)");
+        } else if (numGuests >= 3 && numGuests <= 5) {
+            space();
+            System.out.println("\nRosewood Hotel Reservation");
+            System.out.println("Chambre d'hotel Good for 3-5 people.");
+            System.out.println("\nChambre d'hotel Type          Chambre d'hotel #         Price");
+            System.out.println("Classic Chambre d'hotel           104-106             (PHP 4500)");
+            System.out.println("Deluxe Chambre d'hotel            204-206             (PHP 7500)");
+            System.out.println("Suite Chambre d'hotel             304-306             (PHP 15000)");
+        } else if (numGuests >= 6 && numGuests <= 10) {
+            space();
+            System.out.println("\nRosewood Hotel Reservation");
+            System.out.println("Chambre d'hotel Good for 6-10 people.");     
+            System.out.println("\nChambre d'hotel Type          Chambre d'hotel #         Price");
+            System.out.println("Classic Chambre d'hotel           107-109             (PHP 7500)");
+            System.out.println("Deluxe Chambre d'hotel            207-209             (PHP 15000)");
+            System.out.println("Suite Chambre d'hotel             307-309             (PHP 20000)");
+        } else {
+            System.out.println("Invalid number of guests, please try again.");
+            makeReservation();
+            return;
+        }
+
+        System.out.println("Please select a room number:");
+        roomNumber = input.nextInt();
+
+// Check if the selected room is available and assign room type
+        if (roomNumber >= 101 && roomNumber <= 103 && classicRoom[roomNumber - 101]) {
+            classicRoom[roomNumber - 101] = false;
+            roomType = "Classic Chambre d'hotel";
+            totalPrice = 2000;
+        } else if (roomNumber >= 201 && roomNumber <= 203 && deluxeRoom[roomNumber - 201]) {
+            deluxeRoom[roomNumber - 201] = false;
+            roomType = "Deluxe Chambre d'hotel";
+            totalPrice = 4000;
+        } else if (roomNumber >= 301 && roomNumber <= 303 && suiteRoom[roomNumber - 301]) {
+            suiteRoom[roomNumber - 301] = false;
+            roomType = "Suite Chambre d'hotel";
+            totalPrice = 6000;
+        } else if (roomNumber >= 104 && roomNumber <= 106 && classicRoom[roomNumber - 101]) {
+            classicRoom[roomNumber - 101] = false;
+            roomType = "Classic Chambre d'hotel";
+            totalPrice = 4500;
+        } else if (roomNumber >= 204 && roomNumber <= 206 && deluxeRoom[roomNumber - 201]) {
+            deluxeRoom[roomNumber - 201] = false;
+            roomType = "Deluxe Chambre d'hotel";
+            totalPrice = 7500;
+        } else if (roomNumber >= 304 && roomNumber <= 306 && suiteRoom[roomNumber - 301]) {
+            suiteRoom[roomNumber - 301] = false;
+            roomType = "Suite Chambre d'hotel";
+            totalPrice = 15000;
+        } else if (roomNumber >= 107 && roomNumber <= 109 && classicRoom[roomNumber - 101]) {
+            classicRoom[roomNumber - 101] = false;
+            roomType = "Classic Chambre d'hotel";
+            totalPrice = 7500;
+        } else if (roomNumber >= 207 && roomNumber <= 209 && deluxeRoom[roomNumber - 201]) {
+            deluxeRoom [roomNumber - 201] = false;
+            roomType = "Deluxe Chambre d'hotel";
+            totalPrice = 4000;
+        } else if (roomNumber >= 307 && roomNumber <= 309 && suiteRoom[roomNumber - 301]) {
+            suiteRoom[roomNumber - 301] = false;
+            roomType = "Suite Chambre d'hotel";
+            totalPrice = 20000;            
+        } else {
+            System.out.println("Invalid room number or room already taken, please try again.");
+            makeReservation();
+            return;
+        }
+        System.out.println("Please enter your name:");
+        input.nextLine(); // Consume newline left-over
+        name = input.nextLine();
+
+        System.out.println("How many nights will you stay?:");
+        numNights = input.nextInt();
+        
+        
+
+        // Calculate the total price
+        totalPrice *= numNights;
+        overTotal += totalPrice;
+        space();
+             
+        receipt ="\n------------------------------------------------------------------------------"+
+        "\n\nRosewood Hotel Reservation"+
+        "\n\nCustomer Name: " + name+
+        "\nRoom Type: " + roomType+
+        "\nRoom Number: " + roomNumber+
+        "\nNumber of nights: " + numNights+
+        "\nTotal Price: PHP " + totalPrice+
+        "\nOverall Total Price: PHP " + overTotal+
+        "\n---------------------------------------------------------------------------------------";
+  System.out.println("\nReservation successful! Here's your receipt:\n");
+  System.out.println(receipt);
+  
+  
+
+
+        
+        System.out.println("\nWould you like to Reserve another room? \n1. Yes \n2. No");
+        System.out.print("Please Select an Option: ");
+        if (input.nextInt()==1){
+            makeReservation();
+        }else{
+            MainMenu=true;    
+                           
+        }
+    }
+    public static void checkAvailability() {
+        Scanner input = new Scanner(System.in);
+        space();
+        System.out.println("\nWhich room type do you want to check availability?");
+        System.out.println("1. Classic Chambre d'hotel");
+        System.out.println("2. Deluxe Chambre d'hotel");
+        System.out.println("3. Suite Chambre d'hotel");
+        int roomTypeOption = input.nextInt();
+        
+        switch (roomTypeOption) {           
+    case 1:
+        space();
+          System.out.println("\nClassic Chambre d'hotel");
+          for (int i = 0; i < 10; i++) {
+              if (classicRoom[i]) {
+                  System.out.println("\nChambre d'hotel " + (i + 101) + " is available.");
+              } else {
+                  System.out.println("Chambre d'hotel " + (i + 101) + " is occupied by "+ name+".");
+              }
+          }
+          break;
+    case 2:
+        space();
+            System.out.println("Deluxe Chambre d'hotel:");
+            for (int i = 0; i < 10; i++) {
+                if (deluxeRoom[i]) {
+                    System.out.println("Chambre d'hotel " + (i + 201) + " is available.");
+                } else {
+                    System.out.println("Chambre d'hotel " + (i + 201) + " is occupied by "+ name+".");
+                }
+            }
+            break;
+    case 3:
+        space();
+            System.out.println("Suite Chambre d'hotel:");
+            for (int i = 0; i < 10; i++) {
+                if (suiteRoom[i]) {
+                    System.out.println("Chambre d'hotel " + (i + 301) + " is available.");
+                }else{
+                    System.out.println("Chambre d'hotel " + (i + 301) + " is occupied by "+ name+".");
+                }
+            }
+            break;
+        default:
+            System.out.println("Invalid option, please try again.");
+            break;
+    }
+}
+    public static void cancelReservation() {
+    Scanner input = new Scanner(System.in);
+    System.out.println("\nPlease enter the room number to cancel the reservation for:");
+        System.out.println("1. Classic Chambre d'hotel (101-110)");
+        System.out.println("2. Deluxe Chambre d'hotel(201-210");
+        System.out.println("3. Suite Chambre d'hotel (301-310)");
+        
+    int cancelRoomNumber = input.nextInt();
+
+    if (cancelRoomNumber >= 101 && cancelRoomNumber <= 110) {
+        classicRoom[cancelRoomNumber - 101] = true;
+    } else if (cancelRoomNumber >= 201 && cancelRoomNumber <= 210) {
+        deluxeRoom[cancelRoomNumber - 201] = true;
+    } else if (cancelRoomNumber >= 301 && cancelRoomNumber <= 310) {
+        suiteRoom[cancelRoomNumber - 301] = true;
+    } else {
+        System.out.println("Invalid room number, please try again.");
+        return;
+    }
+
+    System.out.println("Reservation cancelled for room " + cancelRoomNumber + ".");
+}
+}
